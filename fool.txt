@@ -1,0 +1,66 @@
+    elif artists == "Портрет пользователя":
+        df2 = pd.read_csv('datas.csv')
+        labels = ['Female', 'Male']
+        size = df2['Gender'].value_counts()
+        colors = ['lightgreen', 'orange']
+        explode = [0, 0.1]
+        fig1, ax1 = plt.subplots()
+        ax1.pie(size, labels=labels, autopct='%1.1f%%',
+            shadow=True, startangle=95, explode=explode)
+        st.write("""It's our age statistics""")
+        st.pyplot(plt)
+    elif artists == "Карта проходимости":
+        df = pd.DataFrame(
+        np.random.randn(300, 2) / [360, 360] + [45.03723709987306, 38.99683388647596],
+        columns=['lat', 'lon'])
+        st.pydeck_chart(pdk.Deck(
+        map_style='mapbox://styles/mapbox/light-v9',
+        initial_view_state=pdk.ViewState(
+            latitude=45.03723709987306,
+            longitude=38.99683388647596,
+            zoom=13,
+            pitch=50,
+        ),
+        layers=[
+            pdk.Layer(
+                'HexagonLayer',
+                data=df,
+                get_position='[lon, lat]',
+                radius=20,
+                elevation_scale=20,
+                elevation_range=[0, 30],
+                pickable=True,
+                extruded=True,
+            ),
+            pdk.Layer(
+                'ScatterplotLayer',
+                data=df,
+                get_position='[lon, lat]',
+                get_color='[200, 30, 0, 160]',
+                get_radius=7,
+            ),
+        ],
+        ))
+    elif artists == "Annual revenue":
+        df2 = pd.read_csv('datas.csv')
+        fig = plt.figure(figsize=(40,10))
+        sns.barplot(x = df2['Age'] , y = df2['Annual Income (k$)'] , palette='icefire')
+        plt.title('Age vs Annual Income', fontsize = 20)
+        plt.xticks(rotation=90)
+        st.pyplot(fig)
+    elif artists == "Customers revenue":
+        pds = pd.read_csv('datas.csv')[['CustomerID','Spending Score (1-100)']]
+        pds.columns = ['Number of customers', 'Spending Score']
+        df = pd.DataFrame(
+            pds,
+            columns=['Number of customers', 'Spending Score'])
+
+        c = alt.Chart(df).mark_circle().encode(
+            x='Number of customers', y='Spending Score', tooltip=['Number of customers', 'Spending Score'])
+        st.altair_chart(c, use_container_width=True)
+    elif artists == "Ages":
+        df2 = pd.read_csv('datas.csv')
+        fig = plt.figure(figsize=(20, 8))
+        sns.countplot(df2['Age'], palette = 'hsv')
+        plt.title('Distribution of Age', fontsize = 20)
+        st.pyplot(fig)
